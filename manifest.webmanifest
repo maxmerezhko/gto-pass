@@ -1,0 +1,10 @@
+{
+  "name": "ГТО · анкета и пропуск",
+  "short_name": "ГТО",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f4f6f9",
+  "theme_color": "#0b3b7a",
+  "lang": "ru"
+}

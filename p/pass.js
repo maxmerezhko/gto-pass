@@ -54,6 +54,20 @@
     return { pass: p };
   }
 
+  function testsBlock(tests) {
+    if (!tests || !tests.length) return null;
+    var d = G.describeTests(tests);
+    function list(title, items) {
+      if (!items.length) return null;
+      return h('div', null, h('b', { text: title }),
+        h('ul', null, items.map(function (t) { return h('li', { text: t }); })));
+    }
+    return h('div', { class: 'tests' },
+      h('div', { class: 'note', text: 'Ваши испытания на этом мероприятии' }),
+      list('Обязательные', d.required),
+      list('По выбору', d.optional));
+  }
+
   function passCard(entry, i, n) {
     var p = G.readPass(entry.token);
     if (!p) return null;
@@ -75,6 +89,7 @@
       h('div', { class: 'note', text: line }),
       h('div', { class: 'qr' }, G.qrSvg(link, { label: 'Пропуск ' + p.name })),
       h('p', { text: 'Покажите судье на каждой станции' }),
+      testsBlock(p.tests),
       share,
       n > 1 ? h('div', { class: 'dots', text: (i + 1) + ' из ' + n + ' — листайте вбок' }) : null);
   }

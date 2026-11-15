@@ -1,6 +1,6 @@
 /* Запоминает страницы анкеты и пропуска в телефоне, чтобы они открывались
  * без интернета. Ничего не отправляет: только отдаёт свои файлы из кэша. */
-var CACHE = 'gto-pages-v1';
+var CACHE = 'gto-pages-v2';
 var FILES = ['./', 'index.html', 'anketa.js', 'gto.js', 'qrcode.js', 'style.css',
   'manifest.webmanifest', 'p/', 'p/index.html', 'p/pass.js'];
 

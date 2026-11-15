@@ -68,13 +68,76 @@
       if (p.v !== 1 || !p.id || !p.ev) return null;
       return { token: token, kind: p.k === 's' ? 'sticker' : 'participant', id: p.id,
         eventId: p.ev, name: p.n || '', stage: p.st || null, sex: p.sx || null,
-        birthYear: p.by || null, wave: p.w || null };
+        birthYear: p.by || null, wave: p.w || null, tests: Array.isArray(p.t) ? p.t : [] };
     } catch (e) {
       return null;
     }
   }
 
   // ---------- справочники ----------
+
+  // Коды станций → короткие названия (как в приложении; сверяет test/pass_tests_test.dart).
+  var STATIONS = {
+    "run10": "Бег 10 м",
+    "run30": "Бег 30 м",
+    "run60": "Бег 60 м",
+    "run100": "Бег 100 м",
+    "shuttle": "Челнок 3×10",
+    "run_long": "Бег 1–3 км",
+    "six_min": "Шестиминутный бег",
+    "cross_m": "Смешанное передв. (м)",
+    "ski_walk": "Ходьба на лыжах",
+    "ski1": "Лыжи 1 км",
+    "ski2": "Лыжи 2 км",
+    "ski3": "Лыжи 3 км",
+    "ski5": "Лыжи 5 км",
+    "cross2": "Кросс 2 км",
+    "cross3": "Кросс 3 км",
+    "cross5": "Кросс 5 км",
+    "cross1": "Смеш. передв. 1 км",
+    "nordic3": "Скандинавская ходьба",
+    "pullups": "Подтягивания",
+    "pullups_low": "Подтягивания низкая",
+    "pushups": "Отжимания",
+    "pushups_bench": "Отжимания от скамьи",
+    "pushups_chair": "Отжимания от стула",
+    "kettlebell": "Рывок гири",
+    "flex": "Наклон",
+    "jump_stand": "Прыжок с места",
+    "situps": "Пресс 1 мин",
+    "situps30": "Пресс 30 с",
+    "medball": "Набивной мяч",
+    "throw_ball": "Метание 150 г",
+    "throw_500": "Метание 500 г",
+    "throw_700": "Метание 700 г",
+    "throw_tennis": "Метание в цель",
+    "swim_m": "Плавание (м)",
+    "swim25": "Плавание 25 м",
+    "swim50": "Плавание 50 м",
+    "shooting": "Стрельба (электр.)",
+    "shoot_open": "Стрельба (открытый)",
+    "selfdefense": "Самозащита",
+    "hike": "Туристский поход"
+  };
+
+  /** Название испытания из кода пропуска: «run_long:2000» → «Бег 2 км». */
+  function testName(code) {
+    var i = code.indexOf(':');
+    if (i < 0) return STATIONS[code] || code;
+    var km = String(Number(code.slice(i + 1)) / 1000).replace('.', ',');
+    return 'Бег ' + km + ' км';
+  }
+
+  /** Испытания пропуска: {required: [...], optional: [...]}, «|» → «или». */
+  function describeTests(tests) {
+    var out = { required: [], optional: [] };
+    (tests || []).forEach(function (t) {
+      var req = t.charAt(0) === '!';
+      var names = (req ? t.slice(1) : t).split('|').map(testName).join(' или ');
+      (req ? out.required : out.optional).push(names);
+    });
+    return out;
+  }
 
   var ROMAN = ['', 'I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI',
     'XII', 'XIII', 'XIV', 'XV', 'XVI', 'XVII', 'XVIII'];
@@ -223,6 +286,7 @@
   var api = {
     b64urlEncode: b64urlEncode, b64urlDecode: b64urlDecode,
     encodeAnketa: encodeAnketa, decodeAnketa: decodeAnketa, readPass: readPass,
+    describeTests: describeTests, testName: testName, STATIONS: STATIONS,
     roman: roman, normalizeUin: normalizeUin, ageToday: ageToday, ruDate: ruDate,
     isPhone: isPhone, inAppBrowser: inAppBrowser, browserName: browserName,
     load: load, save: save, qrSvg: qrSvg, hashParams: hashParams,

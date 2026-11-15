@@ -176,3 +176,8 @@ dl.facts dd { margin: 0; font-weight: 600; }
   .card { border: 1px solid #000; }
 }
 .seg label:has(input:disabled) { opacity: .45; cursor: not-allowed; }
+
+/* Испытания в пропуске */
+.tests { text-align: left; background: #F2F5FA; border-radius: 10px; padding: 10px 14px; margin: 10px 0; }
+.tests ul { margin: 4px 0 8px; padding-left: 20px; }
+.tests li { margin: 2px 0; }
